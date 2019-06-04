@@ -3,6 +3,7 @@ var context = canvas.getContext('2d');
 
 var g_nLoad = 0;
 var imgLoadCount = new Image(); imgLoadCount.onload = function () { g_nLoad++; }; imgLoadCount.src = "js/loadcount.png";
+var imgLoadBkg = new Image(); imgLoadBkg.onload = function () { g_nLoad++; }; imgLoadBkg.src = "assets/login.jpg";
 
 
 var gameIntervalID;
@@ -38,6 +39,7 @@ function BitRow(img, row, w, h, dstx, dsty) { context.drawImage(img, row * w, 0,
 function Bitblt(img, srcx, srcy, w, h, dstx, dsty) { context.drawImage(img, srcx, srcy, w, h, dstx, dsty, w, h); }
 function Bit(img, dstx, dsty) { context.drawImage(img, dstx, dsty); }
 function BitBkg(img) { context.drawImage(img, 0, 0); }
+function BitColor() {  context.fillStyle = 'rgb(0,0,0)'; context.fillRect(0, 0, canvas.width, canvas.height); }
 
 function HideCursor() { if (canvas.style.cursor != 'none') canvas.style.cursor = 'none'; }
 function ShowCursor() { if (canvas.style.cursor != 'auto') canvas.style.cursor = 'auto'; }
@@ -72,9 +74,12 @@ function CreateGame() {
 //劃載入的畫面
 var g_rotateAngle = 0;
 function DrawLoading() {
-
-    context.fillStyle = 'rgb(0,0,0)'; context.fillRect(0, 0, canvas.width, canvas.height);
-    rotateAndPaintImage(imgLoadCount, 1024 / 2, 768 / 2, g_rotateAngle);
+	
+	BitBkg(imgLoadBkg);
+	
+	context.fillText("Loading....", canvas.width / 2.5, canvas.height -300);
+	
+    rotateAndPaintImage(imgLoadCount, canvas.width / 2, canvas.height / 2, g_rotateAngle);
     g_rotateAngle += 10;
 }
 

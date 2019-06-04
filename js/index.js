@@ -8,6 +8,7 @@ const Screen_h = canvas.height;
 const SCREEN_LOAD = 0;
 const SCREEN_GAME = 1;
 const SCREEN_DIALOG = 2;
+const SCREEN_PAGE = 3;
 var m_screen = SCREEN_LOAD;
 
 //0:up, 1:
@@ -35,21 +36,20 @@ function OnLoad() {
 
     var oDiv = document.getElementById('dialog');
     oDiv.addEventListener("click", DialogClick, false);
+
+    oDiv = document.getElementById('page');
+    oDiv.addEventListener("click", DialogClick, false);
+
     ShowDialog(false);
+    ShowPage(false);
 }
 
-function InsertDialog(params) {
-    var div = document.getElementById('dialog');
-    div.scrollTop = 0;
-    div.innerHTML = params;
-}
 
-function ShowDialog(bs) {
-    var x = document.getElementById('dialog');
-    if (bs == true) x.style.display = "block";
-    if (bs == false) x.style.display = "none";
-}
+function InsertDialog(params) { var div = document.getElementById('dialog'); div.scrollTop = 0; div.innerHTML = params; }
+function ShowDialog(bs) { var x = document.getElementById('dialog'); if (bs == true) x.style.display = "block"; if (bs == false) x.style.display = "none"; }
 
+function InsertPage(params) { var div = document.getElementById('page'); div.scrollTop = 0; div.innerHTML = params; }
+function ShowPage(bs) { var x = document.getElementById('page'); if (bs == true) x.style.display = "block"; if (bs == false) x.style.display = "none"; }
 
 var g_loading_ok = false;
 
@@ -59,6 +59,7 @@ function LoadMap(mapid) {
     g_loading_ok = false;
 
     ShowDialog(false);
+    ShowPage(false);
     m_curDialog = 0;
     Player.dir = 0;
 
@@ -236,15 +237,23 @@ var m_curDialog = 0;
 
 function DialogCmd() {
 
-    if (m_curDialog >= NpcRole[m_pickRole].dialog.type.length) { m_screen = SCREEN_GAME; ShowDialog(false); return; }
+    if (m_curDialog >= NpcRole[m_pickRole].dialog.type.length) { m_screen = SCREEN_GAME; ShowDialog(false); ShowPage(false); return; }
 
     var cmd = NpcRole[m_pickRole].dialog.type[m_curDialog];
     console.log("cmd=" + cmd);
-    if (cmd == "dialog" || cmd == "page") {
+    if (cmd == "dialog") {
         if (NpcRole[m_pickRole].dialog.html[m_curDialog] != "") {
             m_screen = SCREEN_DIALOG;
-            ShowDialog(true);
+            ShowPage(false); ShowDialog(true);
             InsertDialog(NpcRole[m_pickRole].dialog.html[m_curDialog]);
+            m_curDialog++; return;
+        }
+    }
+    if (cmd == "page") {
+        if (NpcRole[m_pickRole].dialog.html[m_curDialog] != "") {
+            m_screen = SCREEN_PAGE;
+            ShowDialog(false); ShowPage(true);
+            InsertPage(NpcRole[m_pickRole].dialog.html[m_curDialog]);
             m_curDialog++; return;
         }
     }
@@ -278,6 +287,7 @@ function onMouseDown(e) {
     if (e.button != 0) return; getMousePos(canvas, e);
 
     if (m_screen == SCREEN_DIALOG) { DialogClick(); return; }
+    if (m_screen == SCREEN_PAGE) { DialogClick(); return; }
     if (m_screen == SCREEN_GAME) {
         m_pickRole = PickNPC();
         if (m_pickRole >= 0) {
@@ -297,7 +307,7 @@ function onMouseDown(e) {
     }
 }
 
-function DialogClick() { if (m_screen == SCREEN_DIALOG) { DialogCmd(); } }
+function DialogClick() { if (m_screen == SCREEN_DIALOG || SCREEN_PAGE) { DialogCmd(); } }
 
 function onMouseUp(e) {
     if (e.button != 0) return; //左鍵
@@ -320,6 +330,7 @@ function game_Render() {
 
         case SCREEN_LOAD: DrawLoading(); if (g_loading_ok) m_screen = SCREEN_GAME; break;
 
+        case SCREEN_PAGE:
         case SCREEN_DIALOG:
             for (var i = 0; i < NpcRole.length; i++) { DrawNpc(NpcRole[i]); }
             DrawPlayer(Player);
