@@ -44,6 +44,12 @@ function OnLoad() {
     ShowPage(false);
 }
 
+function OnResize() {
+    console.log(canvas.scrollWidth);
+
+    var div = document.getElementById('dialog'); div.style.width = canvas.scrollWidth * 0.9 + "px";
+    div = document.getElementById('page'); div.style.width = canvas.scrollWidth * 0.8 + "px";
+}
 
 function InsertDialog(params) { var div = document.getElementById('dialog'); div.scrollTop = 0; div.innerHTML = params; }
 function ShowDialog(bs) { var x = document.getElementById('dialog'); if (bs == true) x.style.display = "block"; if (bs == false) x.style.display = "none"; }
@@ -141,6 +147,7 @@ function LoadNPC(mapid) {
         //載入完成
         .done(function () { g_loading_ok = true; })
 }
+
 
 
 //產生 +-r 之間的數
