@@ -96,8 +96,7 @@ function LoadNPC(mapid) {
         "map_id": mapid,
         "command": "GetNPCsFromMapID"
     }, function (data) {
-        npc_sets = parse_data(data);    //console.log(npc_sets.length);
-
+        npc_sets = parse_data(data);    //console.log(npc_sets.length);		
         for (var i = 0; i < npc_sets.length; i++) {
 
             NpcRole[i] = new Array();
@@ -319,6 +318,8 @@ function DialogClick() { if (m_screen == SCREEN_DIALOG || SCREEN_PAGE) { DialogC
 function onMouseUp(e) {
     if (e.button != 0) return; //左鍵
     getMousePos(canvas, e);
+	console.log(Player.destx);
+	console.log(Player.desty);
     switch (m_screen) {
         case SCREEN_LOAD: if (MouseInRect(795, 703, 1161, 797)) { } break;
     }
