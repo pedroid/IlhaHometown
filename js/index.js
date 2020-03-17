@@ -31,8 +31,17 @@ function OnLoad() {
     canvas.addEventListener("mousemove", onMouseMove, false);
     canvas.addEventListener("mousedown", onMouseDown, false);
     canvas.addEventListener("mouseup", onMouseUp, false);
-
+	var window_location_search = window.location.search;
+	if(window_location_search){
+		search_type = window_location_search.split('?')[1].split('=')[0];
+		search_value = window_location_search.split('?')[1].split('=')[1];
+		console.log(search_type+':'+search_value);
+		if (search_type == 'mapid'){
+			LoadMap(search_value)
+		}
+	}else{
     LoadMap(1);
+	}
 
     var oDiv = document.getElementById('dialog');
     oDiv.addEventListener("click", DialogClick, false);
@@ -318,8 +327,8 @@ function DialogClick() { if (m_screen == SCREEN_DIALOG || SCREEN_PAGE) { DialogC
 function onMouseUp(e) {
     if (e.button != 0) return; //左鍵
     getMousePos(canvas, e);
-	console.log(Player.destx);
-	console.log(Player.desty);
+	console.log('x_grid:'+Math.round(Player.destx/48));
+	console.log('y_grid:'+Math.round(Player.desty/48));
     switch (m_screen) {
         case SCREEN_LOAD: if (MouseInRect(795, 703, 1161, 797)) { } break;
     }
